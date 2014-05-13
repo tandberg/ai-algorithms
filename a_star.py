@@ -1,69 +1,56 @@
 import math
 from copy import deepcopy
+import heapq
 
-class Astar(object):
-    def __init__(self, board, me, goal):
-        self.board = board
-        self.algorithm(self.board, me, goal)
+def Astar(board, me, goal, open=[], visited=set()):
+    heapq.heappush(open, Node(deepcopy(board), 0, me, goal))
+    while len(open) != 0:
+        current = heapq.heappop(open)
 
-    def algorithm(self, board, me, goal, open=[], visited=set()):
-        open.append(Node(deepcopy(board), 0, me, goal))
+        if current.isGoal():
+            print 'Goal is reached!\n', current
+            return
 
-        iterations = 0
-        while len(open) != 0:
+        neighbours = current.generateNeighbours(visited)
+        for n in neighbours:
+            n.parent = current
+            heapq.heappush(open, n)
+            visited.add(n.state)
 
-            open = sorted(open, key=lambda node: (node.depth + node.score))
-            open.reverse()
-            current = open.pop()
+        visited.add(current.state)
+    print 'No solution found'
 
-            if current.isGoal():
-                print 'Goal is reached!\n', current
-                break
-
-            neighbours = current.generateNeighbours(visited)
-            for n in neighbours:
-                if not (n.state in visited):
-                    n.parent = current
-                    open.append(n)
-                    visited.add(n.state)
-
-            visited.add(current.state)
-            iterations += 1
-        
 class Node(object):
-    def __init__(self, board, depth, me, goal):
+    def __init__(self, board, depth, me, goal, traces=[]):
         self.board = board
         self.depth = depth
         self.me = me
         self.goal = goal
         self.parent = None
         self.state = '{0}#{1}'.format(me[0], me[1])
-
+        self.traces = traces + [me]
         self.score = self.heurestic()
 
     def __str__(self):
-        printBoard(self.board)
-        return 'Score: {0}, Depth: {1}, Pos: {2}\n'.format(self.score, self.depth, self.me)
+        printBoard(self.board, self.traces)
+        return 'Score: {0}, Depth: {1}, sum: {2}\n'.format(self.score, self.depth, (self.score+self.depth))
+
+    def __cmp__(self, other):
+        return (self.depth + self.score) - (other.depth + other.score)
 
     def generateNeighbours(self, visited):
-
         neighbours = []
-        for i in range(3):
-            for j in range(3):
-                if not '{0}#{1}'.format(self.me[0]-(i-1), self.me[1]-(j-1)) in visited:
-                    try:
-                        b = deepcopy(self.board)
-                        b[self.me[0]][self.me[1]] = ' '
-                        if b[self.me[0]-(i-1)][self.me[1]-(j-1)] == ' ':
-                            b[self.me[0]-(i-1)][self.me[1]-(j-1)] = 'o'
-                            neighbours.append(Node(b, self.depth+1, (self.me[0]-(i-1), self.me[1]-(j-1)), self.goal))
-                        
-                        if b[self.me[0]-(i-1)][self.me[1]-(j-1)] == 'x':
-                            b[self.me[0]-(i-1)][self.me[1]-(j-1)] = 'O'
+        for i in [-1, 1]:
 
-                            neighbours.append(Node(b, self.depth+1, (self.me[0]-(i-1), self.me[1]-(j-1)), self.goal))
-                    except Exception:
-                        continue
+            if not '{0}#{1}'.format(self.me[0]+i, self.me[1]) in visited:
+                if self.board[self.me[0]+i][self.me[1]] == ' ' or self.board[self.me[0]+i][self.me[1]] == 'x':
+                    neighbour = Node(self.board, self.depth+1, (self.me[0]+i, self.me[1]), self.goal, self.traces)
+                    neighbours.append(neighbour)
+
+            if not '{0}#{1}'.format(self.me[0], self.me[1]+i) in visited:
+                if self.board[self.me[0]][self.me[1]+i] == ' ' or self.board[self.me[0]][self.me[1]+i] == 'x':
+                    neighbour = Node(self.board, self.depth+1, (self.me[0], self.me[1]+i), self.goal, self.traces)
+                    neighbours.append(neighbour)
 
         return neighbours
 
@@ -71,14 +58,20 @@ class Node(object):
         return self.score == 0
 
     def heurestic(self):
-        return abs(self.me[0] - self.goal[0]) + abs(self.me[1] - self.goal[1])
+        return math.sqrt(pow(self.me[0] - self.goal[0], 2) + pow(self.me[1] - self.goal[1], 2))
 
-def printBoard(board):
-    for row in board:
-        print ''.join(str(x) for x in row)
+def printBoard(board, traces):
+    for i in range(len(board)):
+        col = ''
+        for j in range(len(board[i])):
+            if (i, j) in traces:
+                col += '\033[91m'+'@'+'\033[0m'
+            else:
+                col += board[i][j]
+        print col
 
 def main():
-    file = open('data/big_maze.txt', 'r')
+    file = open('data/big_complex_maze.txt', 'r')
     board = []
     me = ()
     goal = ()
