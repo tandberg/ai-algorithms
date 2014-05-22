@@ -10,7 +10,8 @@ This is a repository including the implementation of some basic Artificial Intel
 - Artificial Neural Network (comming)
 - Min-conflicts (comming)
 - Minimal Independent Set (comming)
-- K-means (comming)
+- K-means
+- ID3 (comming)
 - Evolutionary algorithm (comming)
 	- Parent-mate selection
     	- Fitness Proportionate
@@ -29,6 +30,7 @@ Run the algorithms from the command line typnig:
 python [algorithm-file].py arguments
 ```
 
-## Dependencies
+## Python dependencies
 
-???
+- networkx
+- matplotlib
