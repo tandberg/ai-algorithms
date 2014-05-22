@@ -5,7 +5,7 @@ This is a repository including the implementation of some basic Artificial Intel
 
 
 - Expectation Maximation
-- Simulated Annealing (comming)
+- Simulated Annealing
 - A* search
 - Artificial Neural Network (comming)
 - Min-conflicts (comming)
