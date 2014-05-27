@@ -1,0 +1,22 @@
+<h1>Maze</h1>
+<% for (var i = 0; i < board.length; i++) { %>
+    <div class="row">
+    <% for (var j = 0; j < board[i].length; j++) { %>
+        <div class="cell <% if (!!visited[i+'#'+j]) { %>
+                visited
+            <% }
+            if (goal.x === i && goal.y === j) { %>
+                goal
+            <% }
+            if (board[i][j] === 'x' || board[i][j] === 'o') { %>
+                point-of-interest
+            <% }
+            else if (path && path[i+'#'+j]) { %>
+                path
+            <% }
+            else if (board[i][j] !== ' ') { %>
+                wall
+            <% } %>"></div>
+    <% } %>
+    </div>
+<% } %>

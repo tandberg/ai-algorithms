@@ -1,0 +1,42 @@
+@import "bower_components/bootstrap-sass-official/vendor/assets/stylesheets/bootstrap/bootstrap.scss";
+
+.astar {
+
+    .row {
+        margin: -1px;
+    }
+    .cell {
+        display: inline-block; 
+        width: 20px;
+        height: 20px;
+        margin: -2px;
+        padding: 0;
+
+        &.visited {
+            background-color: #ccc;
+        }
+
+        &.route {
+            background-color: #f00;
+        }
+
+        &.goal {
+            background-color: #0ff;
+        }
+
+        &.wall {
+            background-color: #854930;
+        }
+
+        &.point-of-interest {
+            background-color: #000;
+        }
+
+        &.path {
+            background-color: #FF6600;
+        }
+    }
+
+
+}
+

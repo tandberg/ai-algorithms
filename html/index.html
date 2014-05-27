@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>AI algorithms</title>
+        <link rel="stylesheet" href="dist/css/styles.css">
+    </head>
+    <body>
+        <div class="container">
+            <div id="header-region"></div>
+            <div id="main-region"></div>
+        </div>
+        <script src="dist/main.js"></script>
+    </body>
+
+
+    <script>
+        var injectScript = function(path, attrs) {
+            var script = document.createElement("script");
+            script.async = true;
+            script.src = path;
+
+            // Add attributes.
+            for (var key in attrs) {
+                if (attrs.hasOwnProperty(key)) {
+                    script.setAttribute(key, attrs[key]);
+                }
+            }
+
+            // Find the first script tag on the page and insert the `script`-tag.
+            var entry = document.getElementsByTagName("script")[0];
+            entry.parentNode.insertBefore(script, entry);
+        }
+        
+        injectScript("http://"+(location.host||"localhost").split(":")[0]+":35729/livereload.js?snipver=1");
+    </script>
+</html>
